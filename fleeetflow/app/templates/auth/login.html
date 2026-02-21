@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | FleetFlow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+</head>
+<body class="flex items-center justify-center p-4">
+    <div class="w-full max-w-md animate-fade-in">
+        <div class="glass-card rounded-2xl p-8 md:p-10">
+            <div class="text-center mb-10 animate-slide-up" style="animation-delay: 0.1s;">
+                <h1 class="text-4xl font-extrabold text-white tracking-tight">FleetFlow</h1>
+                <p class="text-slate-400 mt-3 font-medium">Logistics Management Portal</p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="space-y-3 mb-6 animate-slide-up" style="animation-delay: 0.2s;">
+                        {% for category, message in messages %}
+                            <div class="p-4 rounded-xl text-sm font-medium {% if category == 'success' %} bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 {% else %} bg-rose-500/10 text-rose-400 border border-rose-500/20 {% endif %}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form action="{{ url_for('auth.login') }}" method="POST" class="space-y-6 animate-slide-up" style="animation-delay: 0.3s;">
+                <div class="input-group">
+                    <label class="block text-sm font-semibold text-slate-300 mb-2">Username or Email</label>
+                    <input type="text" name="username" required placeholder="Enter your credentials"
+                        class="block w-full px-4 py-3 rounded-xl focus:outline-none placeholder:text-slate-600">
+                </div>
+                <div class="input-group">
+                    <label class="block text-sm font-semibold text-slate-300 mb-2">Password</label>
+                    <input type="password" name="password" required placeholder="••••••••"
+                        class="block w-full px-4 py-3 rounded-xl focus:outline-none placeholder:text-slate-600">
+                </div>
+                
+                <div class="pt-2">
+                    <button type="submit" 
+                        class="btn-primary w-full flex justify-center items-center py-3.5 px-4 rounded-xl text-white font-bold text-sm tracking-wide">
+                        Sign In
+                    </button>
+                </div>
+            </form>
+            
+            <div class="mt-10 pt-6 border-t border-white/5 text-center animate-slide-up" style="animation-delay: 0.4s;">
+                <p class="text-xs text-slate-500 font-medium tracking-tight">
+                    <span class="inline-block p-1 px-2 border border-slate-800 rounded mr-2">SECURE</span>
+                    RBAC Protected Access Only
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

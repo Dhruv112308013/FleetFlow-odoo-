@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Edit Vehicle' if vehicle else 'Register Vehicle' }}{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl bg-white rounded-xl shadow-lg p-8 border border-gray-100 mx-auto">
+    <form action="{{ url_for('vehicles.edit', id=vehicle.id) if vehicle else url_for('vehicles.add') }}" method="POST" class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="md:col-span-2">
+                <label class="block text-sm font-bold text-gray-700 mb-1">License Plate</label>
+                <input type="text" name="license_plate" required value="{{ vehicle.license_plate if vehicle }}" placeholder="e.g. ABC-1234"
+                    class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Make</label>
+                <input type="text" name="make" required value="{{ vehicle.make if vehicle }}" placeholder="e.g. Tesla"
+                    class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Model</label>
+                <input type="text" name="model" required value="{{ vehicle.model if vehicle }}" placeholder="e.g. Semi"
+                    class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Year</label>
+                <input type="number" name="year" required value="{{ vehicle.year if vehicle }}"
+                    class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Vehicle Type</label>
+                <select name="type" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none">
+                    <option value="Truck" {{ 'selected' if vehicle and vehicle.type == 'Truck' }}>Truck</option>
+                    <option value="Van" {{ 'selected' if vehicle and vehicle.type == 'Van' }}>Van</option>
+                    <option value="Car" {{ 'selected' if vehicle and vehicle.type == 'Car' }}>Car</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Max Capacity (kg)</label>
+                <input type="number" step="0.1" name="max_capacity_kg" required value="{{ vehicle.max_capacity_kg if vehicle }}"
+                    class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Acquisition Cost (₹)</label>
+                <input type="number" step="0.01" name="acquisition_cost" required value="{{ vehicle.acquisition_cost if vehicle }}"
+                    class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none">
+            </div>
+            {% if vehicle %}
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Vehicle Status</label>
+                <select name="status" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none">
+                    <option value="Available" {{ 'selected' if vehicle.status.value == 'Available' or vehicle.status == 'Available' }}>Available</option>
+                    <option value="On Trip" {{ 'selected' if vehicle.status.value == 'On Trip' or vehicle.status == 'On Trip' }}>On Trip</option>
+                    <option value="In Shop" {{ 'selected' if vehicle.status.value == 'In Shop' or vehicle.status == 'In Shop' }}>In Shop</option>
+                    <option value="Suspended" {{ 'selected' if vehicle.status.value == 'Suspended' or vehicle.status == 'Suspended' }}>Suspended</option>
+                </select>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="pt-6 border-t border-gray-100 flex justify-end space-x-4">
+            <a href="{{ url_for('vehicles.index') }}" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium">Cancel</a>
+            <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-bold shadow-md">
+                {{ 'Update Vehicle' if vehicle else 'Save Vehicle' }}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

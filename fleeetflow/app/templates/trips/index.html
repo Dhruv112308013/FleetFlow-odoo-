@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Trip Dispatcher | FleetFlow{% endblock %}
+
+{% block content %}
+<div class="mb-10 flex items-center justify-between">
+    <div>
+        <h1 class="text-4xl font-extrabold tracking-tight text-main">Trip Dispatcher</h1>
+        <p class="mt-3 font-medium text-muted">Coordinate fleet movements and monitor trip status in real-time.</p>
+    </div>
+    {% if session.role in ['Fleet Manager', 'Dispatcher'] %}
+    <a href="{{ url_for('trips.create') }}" class="btn-primary inline-flex items-center px-8 py-4 rounded-2xl text-white font-bold text-sm tracking-wide shadow-xl transition-all hover:scale-[1.02]" style="background-color: var(--primary);">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+        </svg>
+        New Trip Request
+    </a>
+    {% endif %}
+</div>
+
+<div class="glass-card rounded-2xl shadow-2xl overflow-hidden border" style="border-color: var(--card-border);">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="text-xs uppercase tracking-widest border-b text-muted" style="background-color: var(--bg-surface); border-color: var(--card-border);">
+                    <th class="px-8 py-5 font-black">Trip Ref</th>
+                    <th class="px-8 py-5 font-black">Asset & Operator</th>
+                    <th class="px-8 py-5 font-black">Logistics Route</th>
+                    <th class="px-8 py-5 font-black">Cargo Load</th>
+                    <th class="px-8 py-5 font-black">Lifecycle</th>
+                    <th class="px-8 py-5 font-black text-right">Command</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y" style="border-color: var(--card-border);">
+                {% for trip in trips %}
+                <tr class="group transition-all hover:bg-white/[0.02] animate-fade-in" style="animation-delay: {{ loop.index0 * 0.05 }}s;">
+                    <td class="px-8 py-6 font-mono font-bold text-main selection:bg-blue-500/30">
+                        {{ trip.trip_number }}
+                    </td>
+                    <td class="px-8 py-6">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-xl flex items-center justify-center mr-4 shadow-inner" style="background-color: var(--bg-surface);">
+                                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="text-sm font-black text-main tracking-tight">{{ trip.vehicle.license_plate }}</div>
+                                <div class="text-xs font-bold text-muted uppercase mt-0.5">{{ trip.driver.full_name }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-8 py-6">
+                        <div class="flex items-center space-x-3 text-sm font-medium">
+                            <span class="text-main">{{ trip.origin }}</span>
+                            <svg class="w-4 h-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                            </svg>
+                            <span class="text-main">{{ trip.destination }}</span>
+                        </div>
+                    </td>
+                    <td class="px-8 py-6">
+                        <div class="inline-flex items-center px-3 py-1 rounded-lg text-xs font-bold border" style="background-color: var(--bg-surface); color: var(--text-main); border-color: var(--card-border);">
+                            {{ trip.cargo_weight_kg }} kg
+                        </div>
+                    </td>
+                    <td class="px-8 py-6">
+                        {% set status = trip.status.value if trip.status.value is defined else trip.status %}
+                        {% if status == 'Scheduled' %}
+                            <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-black tracking-widest uppercase border shadow-sm" style="background-color: var(--status-off-duty-bg); color: var(--status-off-duty-text); border-color: var(--status-off-duty-text);">
+                                <span class="w-1.5 h-1.5 rounded-full mr-2" style="background-color: currentColor;"></span>
+                                Scheduled
+                            </span>
+                        {% elif status == 'Dispatched' %}
+                            <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-black tracking-widest uppercase border shadow-md animate-pulse" style="background-color: var(--status-on-trip-bg); color: var(--status-on-trip-text); border-color: var(--status-on-trip-text);">
+                                <span class="w-1.5 h-1.5 rounded-full mr-2" style="background-color: currentColor;"></span>
+                                In Transit
+                            </span>
+                        {% elif status == 'Completed' %}
+                            <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-black tracking-widest uppercase border" style="background-color: var(--status-on-duty-bg); color: var(--status-on-duty-text); border-color: var(--status-on-duty-text);">
+                                <svg class="w-3.5 h-3.5 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                                Arrived
+                            </span>
+                        {% else %}
+                            <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-black tracking-widest uppercase border" style="background-color: var(--status-suspended-bg); color: var(--status-suspended-text); border-color: var(--status-suspended-text);">
+                                Cancelled
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td class="px-8 py-6 text-right">
+                        {% if status == 'Scheduled' and session.role in ['Dispatcher', 'Fleet Manager'] %}
+                            <a href="{{ url_for('trips.dispatch', id=trip.id) }}" class="inline-flex items-center px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all hover:scale-110 shadow-lg" style="background-color: #3b82f6; color: white;">Dispatch</a>
+                        {% elif status == 'Dispatched' and session.role in ['Dispatcher', 'Fleet Manager'] %}
+                            <a href="{{ url_for('trips.complete', id=trip.id) }}" class="inline-flex items-center px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all hover:scale-110 shadow-lg" style="background-color: #10b981; color: white;">Complete</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="px-8 py-20 text-center">
+                        <div class="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6" style="background-color: var(--bg-surface);">
+                            <svg class="w-10 h-10 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-black text-main mb-2">No active missions</h3>
+                        <p class="text-sm font-medium text-muted">Initialize your first trip request to start monitoring fleet movements.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .animate-fade-in { animation: fadeIn 0.5s ease-out both; }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+{% endblock %}

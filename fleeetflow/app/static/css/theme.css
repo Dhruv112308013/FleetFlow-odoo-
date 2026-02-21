@@ -1,0 +1,160 @@
+:root {
+    /* Light Mode */
+    --bg-main: #f8fafc;
+    --bg-sidebar: #0f172a;
+    --bg-header: #ffffff;
+    --bg-surface: #ffffff;
+
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --text-inverse: #f8fafc;
+
+    --nav-active-bg: rgba(255, 255, 255, 0.1);
+    --nav-active-border: #3b82f6;
+
+    --card-bg: #ffffff;
+    --card-border: rgba(0, 0, 0, 0.05);
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.2);
+
+    --primary: #3b82f6;
+    --primary-hover: #2563eb;
+    --accent: #6366f1;
+
+    /* Status Colors - Light */
+    --status-on-duty-bg: rgba(16, 185, 129, 0.1);
+    --status-on-duty-text: #059669;
+    --status-on-trip-bg: rgba(245, 158, 11, 0.1);
+    --status-on-trip-text: #d97706;
+    --status-off-duty-bg: rgba(100, 116, 139, 0.1);
+    --status-off-duty-text: #64748b;
+    --status-suspended-bg: rgba(239, 68, 68, 0.1);
+    --status-suspended-text: #dc2626;
+}
+
+[data-theme='dark'] {
+    /* Dark Mode */
+    --bg-main: #0f172a;
+    --bg-sidebar: #020617;
+    --bg-header: #1e293b;
+    --bg-surface: #1e293b;
+
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --text-inverse: #0f172a;
+
+    --nav-active-bg: rgba(255, 255, 255, 0.05);
+    --nav-active-border: #3b82f6;
+
+    --card-bg: rgba(30, 41, 59, 0.7);
+    --card-border: rgba(255, 255, 255, 0.1);
+    --card-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+    --glass-bg: rgba(30, 41, 59, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.1);
+
+    --primary: #3b82f6;
+    --primary-hover: #60a5fa;
+    --accent: #818cf8;
+
+    /* Status Colors - Dark */
+    --status-on-duty-bg: rgba(52, 211, 153, 0.1);
+    --status-on-duty-text: #34d399;
+    --status-on-trip-bg: rgba(251, 191, 36, 0.1);
+    --status-on-trip-text: #fbbf24;
+    --status-off-duty-bg: rgba(148, 163, 184, 0.1);
+    --status-off-duty-text: #94a3b8;
+    --status-suspended-bg: rgba(248, 113, 113, 0.1);
+    --status-suspended-text: #f87171;
+}
+
+/* Helper Classes */
+.text-main {
+    color: var(--text-main) !important;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* Tailwind Global Theme Overrides */
+/* Backgrounds */
+.bg-white {
+    background-color: var(--card-bg) !important;
+}
+
+.bg-gray-50,
+.bg-slate-50,
+.bg-slate-100 {
+    background-color: var(--bg-main) !important;
+}
+
+.bg-gray-100,
+.bg-slate-200,
+.bg-slate-800 {
+    background-color: var(--bg-surface) !important;
+}
+
+/* Text Colors */
+.text-gray-900,
+.text-gray-800,
+.text-slate-900,
+.text-slate-800,
+.text-slate-700 {
+    color: var(--text-main) !important;
+}
+
+.text-gray-700,
+.text-gray-600,
+.text-gray-500,
+.text-gray-400,
+.text-slate-600,
+.text-slate-500,
+.text-slate-400 {
+    color: var(--text-muted) !important;
+}
+
+/* Borders */
+.border-gray-50,
+.border-gray-100,
+.border-gray-200,
+.border-slate-100,
+.border-slate-200,
+.border-slate-700 {
+    border-color: var(--card-border) !important;
+}
+
+.divide-gray-100,
+.divide-gray-200,
+.divide-slate-100,
+.divide-slate-700 {
+    border-color: var(--card-border) !important;
+}
+
+/* Inputs and Forms */
+input,
+select,
+textarea {
+    background-color: var(--bg-surface) !important;
+    border-color: var(--card-border) !important;
+    color: var(--text-main) !important;
+}
+
+input::placeholder {
+    color: var(--text-muted) !important;
+    opacity: 0.6;
+}
+
+/* Global Transition */
+body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+}
+
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--card-shadow);
+}

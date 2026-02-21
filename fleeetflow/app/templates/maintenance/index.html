@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Maintenance Logs{% endblock %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-8">
+    <p class="text-gray-500">Track vehicle service history and recurring maintenance costs.</p>
+    {% if session.role in ['Fleet Manager', 'Safety Officer'] %}
+    <a href="{{ url_for('maintenance.add') }}" class="bg-yellow-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-yellow-700 transition flex items-center shadow-lg">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+        </svg>
+        Log Maintenance
+    </a>
+    {% endif %}
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <table class="w-full text-left">
+        <thead class="bg-gray-50 border-b border-gray-100">
+            <tr class="text-gray-500 text-xs uppercase tracking-wider">
+                <th class="px-6 py-4 font-semibold">Date</th>
+                <th class="px-6 py-4 font-semibold">Vehicle</th>
+                <th class="px-6 py-4 font-semibold">Service Type</th>
+                <th class="px-6 py-4 font-semibold">Cost</th>
+                <th class="px-6 py-4 font-semibold">Odometer</th>
+                <th class="px-6 py-4 font-semibold">Performed By</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+            {% for log in logs %}
+            <tr class="hover:bg-gray-50 transition">
+                <td class="px-6 py-4 text-sm text-gray-900">{{ log.service_date }}</td>
+                <td class="px-6 py-4">
+                    <div class="text-sm font-bold text-gray-900">{{ log.vehicle.license_plate }}</div>
+                    <div class="text-xs text-gray-500">{{ log.vehicle.make }} {{ log.vehicle.model }}</div>
+                </td>
+                <td class="px-6 py-4 text-sm">{{ log.service_type }}</td>
+                <td class="px-6 py-4 text-sm font-bold text-gray-900">₹{{ "{:,.2f}".format(log.cost) }}</td>
+                <td class="px-6 py-4 text-sm">{{ "{:,}".format(log.odometer_at_service) }} km</td>
+                <td class="px-6 py-4 text-sm text-gray-500">{{ log.performed_by }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" class="px-6 py-10 text-center text-gray-500">
+                    No maintenance records found.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
